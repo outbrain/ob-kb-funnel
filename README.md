@@ -5,6 +5,7 @@ Based on D3 Funnel lib.
 
 ### Installation
 Copy the content of this folder to the /installedPlugins/ob-kb-funnel under the kibana installation directory.
+Run `npm install`.
 
 ### Usage
 Once installed, you'll see an additional type of visualization, named "Funnel View"
