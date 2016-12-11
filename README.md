@@ -1,7 +1,7 @@
 # Kibana Funnel Visualization
 
 Kibana Visualization plugin for displaying a funnel
-Based on D3 Funnel lib.
+Based on D3 Funnel lib - https://github.com/jakezatecky/d3-funnel
 
 ### Installation
 Copy the content of this folder to the /installedPlugins/ob-kb-funnel under the kibana installation directory.
