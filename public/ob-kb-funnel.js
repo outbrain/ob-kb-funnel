@@ -41,14 +41,17 @@ function FunnelProvider(Private) {
       			percent: false,
       			percentFromTop: false,
       			percentFromAbove: false,
-      			funnelOptions : "\n\
+      			funnelOptions : "\
 {\n\
   \"block\": { \n\
     \"dynamicHeight\": true,\n\
-    \"minHeight\": 30\n\
+    \"minHeight\": 30,\n\
+    \"highlight\": true\n\
   },\n\
   \"chart\": {\n\
-    \"curve\": {\"enabled\": true}\n\
+    \"curve\": {\n\
+      \"enabled\": true\n\
+    }\n\
   }\n\
 }"
 			}

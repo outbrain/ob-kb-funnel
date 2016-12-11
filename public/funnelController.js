@@ -31,7 +31,18 @@ module.directive('funnelElement', function(Private){
                         return label + ": " + values.join(", ");
                     }
                 }
+                options.events = {
+                    click: {
+                        block: function(data) {
+                            console.log("Adding filter with data ", data);
+                            $scope.addFilter(data.label.raw);
+                        }
+                    }
+                }
                 const data = $scope.processData(table.rows, $scope.vis.params);
+                if (!data.length) {
+                    return;
+                }
 
                 const unique = 'T' + new Date().getTime() + '_' + Math.floor((Math.random() * 10000) + 1);
                 element.attr('funnelId', unique);
@@ -44,7 +55,20 @@ module.directive('funnelElement', function(Private){
 });
 
 module.controller('FunnelController', function($scope, Private) {
+    const filterManager = Private(require('ui/filter_manager'));
 
+    $scope.addFilter = function(label) {
+        filterManager.add(
+            // The field to filter for, we can get it from the config
+            $scope.vis.aggs.bySchemaName['tags'][0].params.field,
+            // The value to filter for, we will read out the bucket key from the tag
+            label,
+            // Whether the filter is negated. If you want to create a negated filter pass '-' here
+            null,
+            // The index pattern for the filter
+            $scope.vis.indexPattern.title
+        );
+    }
     $scope.processData = function(rows, params) {
         console.log("Data params: ", params);
         if (!params || !rows || !rows.length) {
@@ -63,14 +87,14 @@ module.controller('FunnelController', function($scope, Private) {
                 values.push(numeral(row[1]).format("0,0"));
             }
             if (params.percent) {
-                values.push(numeral(row[1]/sum).format("0.000%"));
+                values.push(numeral(row[1]/sum).format("0.[000]%"));
             }
             if (params.percentFromTop) {
-                values.push(numeral(row[1]/top).format("0.000%"));
+                values.push(numeral(row[1]/top).format("0.[000]%"));
             }
             if (params.percentFromAbove) {
                 let value = i == 0 ? 1 : row[1] / rows[i - 1][1];
-                values.push(numeral(value).format("0.000%"));
+                values.push(numeral(value).format("0.[000]%"));
             }
 
             data[row[0]] = values;
