@@ -44,8 +44,8 @@ function FunnelProvider(Private) {
       			funnelOptions : "\n\
 {\n\
   \"block\": { \n\
-    \"dynamicHeight\": false,\n\
-    \"minHeight\": 30,\n\
+    \"dynamicHeight\": true,\n\
+    \"minHeight\": 30\n\
   },\n\
   \"chart\": {\n\
     \"curve\": {\"enabled\": true}\n\
