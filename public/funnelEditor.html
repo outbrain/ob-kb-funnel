@@ -1,0 +1,35 @@
+<div class="form-group">
+  
+  <div class="checkbox form-label">
+    <label>
+      <input type="checkbox" ng-model="vis.params.absolute">
+      Absolute value
+    </label>
+  </div>
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.percent">
+      Percent from sum
+    </label>
+  </div>
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.percentFromTop">
+      Percent from top item
+    </label>
+  </div>
+
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.percentFromAbove">
+      Percent from item above
+    </label>
+  </div>
+
+  <label>Funnel options (JSON)</label>
+  <textarea style="height:200px;" ng-model="vis.params.funnelOptions" class="form-control">
+  </textarea>
+
+</div>
