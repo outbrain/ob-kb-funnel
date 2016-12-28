@@ -1,5 +1,7 @@
 # Kibana Funnel Visualization
 
+![example image](https://raw.githubusercontent.com/outbrain/ob-kb-funnel/master/example.png)
+
 Kibana Visualization plugin for displaying a funnel
 Based on D3 Funnel lib - https://github.com/jakezatecky/d3-funnel
 
