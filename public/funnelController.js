@@ -88,21 +88,21 @@ module.controller('FunnelController', function($scope, Private) {
             }
             if (params.percent) {
                 let value = row[1]/sum;
-                if (isNaN(value)) {
+                if (!value || isNaN(value)) {
                     value = 0;
                 }
                 values.push(numeral(value).format("0.[000]%"));
             }
             if (params.percentFromTop) {
                 let value = row[1]/top;
-                if (isNaN(value)) {
+                if (!value || isNaN(value)) {
                     value = 0;
                 }
                 values.push(numeral(value).format("0.[000]%"));
             }
             if (params.percentFromAbove) {
                 let value = i == 0 ? 1 : row[1] / rows[i - 1][1];
-                if (isNaN(value)) {
+                if (!value || isNaN(value)) {
                     value = 0;
                 }
                 values.push(numeral(value).format("0.[000]%"));
