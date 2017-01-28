@@ -1,13 +1,14 @@
 // Include the angular controller
+import TemplateVisTypeTemplateVisTypeProvider from 'ui/template_vis_type/template_vis_type';
+import VisSchemasProvider from 'ui/vis/schemas';
+
 require('plugins/ob-kb-funnel/funnelController');
 require('plugins/ob-kb-funnel/ob-kb-funnel.css');
 
 // The provider function, which must return our new visualization type
 function FunnelProvider(Private) {
-	var TemplateVisType = Private(require('ui/template_vis_type/TemplateVisType'));
-	// Include the Schemas class, which will be used to define schemas
-	var Schemas = Private(require('ui/Vis/Schemas'));
-
+	const TemplateVisType = Private(TemplateVisTypeTemplateVisTypeProvider);
+    const Schemas = Private(VisSchemasProvider);
 	// Describe our visualization
 	return new TemplateVisType({
 		name: 'obFunnel', // The internal id of the visualization (must be unique)
