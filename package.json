@@ -1,6 +1,6 @@
 {
 	"name": "ob-kb-funnel",
-	"version": "5.4.1",
+	"version": "5.5.0",
 
 	"dependencies" : {
 		"numeral": "1.5.3",
