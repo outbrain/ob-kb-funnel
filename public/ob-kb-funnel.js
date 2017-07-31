@@ -23,14 +23,13 @@ function FunnelProvider(Private) {
 					name: 'tagsize',
 					title: 'Value',
 					min: 1,
-					max: 1,
 					aggFilter: ['count', 'avg', 'sum', 'min', 'max', 'cardinality', 'std_dev']
 				},
 				{
 					group: 'buckets',
 					name: 'tags',
 					title: 'Aggregation',
-					min: 1,
+					min: 0,
 					max: 1,
 					aggFilter: '!geohash_grid'
 				}
@@ -42,6 +41,7 @@ function FunnelProvider(Private) {
       			percent: false,
       			percentFromTop: false,
       			percentFromAbove: false,
+      			sumOption: 'byBuckets',
       			funnelOptions : "\
 {\n\
   \"block\": { \n\

@@ -1,5 +1,15 @@
 <div class="form-group">
-  
+
+  <div class="form-label">
+    <h5>
+      Select aggregation type :
+    </h5>
+      <select ng-model="vis.params.sumOption">
+        <option value="byBuckets" selected>By Buckets</option>
+        <option value="byMetrics">By Metrics</option>
+      </select>
+  </div>
+
   <div class="checkbox form-label">
     <label>
       <input type="checkbox" ng-model="vis.params.absolute">

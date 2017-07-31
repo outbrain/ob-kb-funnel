@@ -4,7 +4,7 @@ var numeral = require('numeral');
 var D3Funnel = require('d3-funnel');
 
 module.directive('funnelElement', function(Private){
-    
+
     const tabifyAggResponse = Private(require('ui/agg_response/tabify/tabify'));
 
     return {
@@ -39,7 +39,8 @@ module.directive('funnelElement', function(Private){
                         }
                     }
                 }
-                const data = $scope.processData(table.rows, $scope.vis.params);
+                const dataForProcessing = $scope.getDataForProcessing(table, $scope.vis.params);
+                const data = $scope.processData(dataForProcessing, $scope.vis.params);
                 if (!data.length) {
                     return;
                 }
@@ -114,5 +115,21 @@ module.controller('FunnelController', function($scope, Private) {
         return rows;
     }
 
+    $scope.getDataForProcessing = function (table, params) {
+        if (params.sumOption === 'byBuckets') {
+            return table.rows;
+        }
+        if (params.sumOption === 'byMetrics') {
+            let cols = [];
+            const row = table.rows[0];
+            for (let i = 0; i < row.length; i++) {
+                let name = table.columns[i].title;
+                let newRow = [name, row[i]];
+                cols.push(newRow);
+            }
+            return cols;
+        }
+        throw new Error("Unsupported sumOption " + params.sumOption);
+    }
 
   });
