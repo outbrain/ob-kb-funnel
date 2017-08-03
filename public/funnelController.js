@@ -59,9 +59,13 @@ module.controller('FunnelController', function($scope, Private) {
     const filterManager = Private(require('ui/filter_manager'));
 
     $scope.addFilter = function(label) {
+        const field = $scope.vis.aggs.bySchemaName['tags'][0].params.field;
+        if (!field) {
+            return;
+        }
         filterManager.add(
             // The field to filter for, we can get it from the config
-            $scope.vis.aggs.bySchemaName['tags'][0].params.field,
+            field,
             // The value to filter for, we will read out the bucket key from the tag
             label,
             // Whether the filter is negated. If you want to create a negated filter pass '-' here
