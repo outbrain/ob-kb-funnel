@@ -7,6 +7,7 @@ Based on D3 Funnel lib - https://github.com/jakezatecky/d3-funnel
 
 ### Installation
 Run `bin/kibana-plugin install https://github.com/outbrain/ob-kb-funnel/releases/download/v5.1.1/ob-kb-funnel.zip`
+
 Inside the plugin dir run `npm install`
 
 ### Usage
