@@ -1,12 +1,14 @@
 // Create an Angular module for this plugin
-var module = require('ui/modules').get('ob-kb-funnel');
-var numeral = require('numeral');
-var D3Funnel = require('d3-funnel');
+import { uiModules } from 'ui/modules';
+const module = uiModules.get('kibana/ob-kb-funnel', ['kibana']);
+import { FilterManagerProvider } from 'ui/filter_manager';
+import { AggResponseTabifyProvider } from 'ui/agg_response/tabify/tabify';
+import numeral from 'numeral';
+import D3Funnel from 'd3-funnel';
 
 module.directive('funnelElement', function(Private){
-
-    const tabifyAggResponse = Private(require('ui/agg_response/tabify/tabify'));
-
+    
+    const tabifyAggResponse = Private(AggResponseTabifyProvider);
     return {
         restricts : 'A',
 
@@ -39,8 +41,7 @@ module.directive('funnelElement', function(Private){
                         }
                     }
                 }
-                const dataForProcessing = $scope.getDataForProcessing(table, $scope.vis.params);
-                const data = $scope.processData(dataForProcessing, $scope.vis.params);
+                const data = $scope.processData(table.rows, $scope.vis.params);
                 if (!data.length) {
                     return;
                 }
@@ -56,16 +57,11 @@ module.directive('funnelElement', function(Private){
 });
 
 module.controller('FunnelController', function($scope, Private) {
-    const filterManager = Private(require('ui/filter_manager'));
-
+   const filterManager = Private(FilterManagerProvider);
     $scope.addFilter = function(label) {
-        const field = $scope.vis.aggs.bySchemaName['tags'][0].params.field;
-        if (!field) {
-            return;
-        }
         filterManager.add(
             // The field to filter for, we can get it from the config
-            field,
+            $scope.vis.aggs.bySchemaName['tags'][0].params.field,
             // The value to filter for, we will read out the bucket key from the tag
             label,
             // Whether the filter is negated. If you want to create a negated filter pass '-' here
@@ -112,28 +108,9 @@ module.controller('FunnelController', function($scope, Private) {
                 }
                 values.push(numeral(value).format("0.[000]%"));
             }
-
             data[row[0]] = values;
         }
         $scope.processedData = data;
         return rows;
     }
-
-    $scope.getDataForProcessing = function (table, params) {
-        if (params.sumOption === 'byBuckets') {
-            return table.rows;
-        }
-        if (params.sumOption === 'byMetrics') {
-            let cols = [];
-            const row = table.rows[0];
-            for (let i = 0; i < row.length; i++) {
-                let name = table.columns[i].title;
-                let newRow = [name, row[i]];
-                cols.push(newRow);
-            }
-            return cols;
-        }
-        throw new Error("Unsupported sumOption " + params.sumOption);
-    }
-
   });
