@@ -2,13 +2,12 @@
 import { uiModules } from 'ui/modules';
 const module = uiModules.get('kibana/ob-kb-funnel', ['kibana']);
 import { FilterManagerProvider } from 'ui/filter_manager';
-import { AggResponseTabifyProvider } from 'ui/agg_response/tabify/tabify';
+import { tabifyAggResponse } from 'ui/agg_response/tabify/tabify';
 import numeral from 'numeral';
 import D3Funnel from 'd3-funnel';
 
 module.directive('funnelElement', function(Private){
     
-    const tabifyAggResponse = Private(AggResponseTabifyProvider);
     return {
         restricts : 'A',
 
@@ -17,7 +16,7 @@ module.directive('funnelElement', function(Private){
                 if (!resp) {
                     return;
                 }
-                var tableGroups = tabifyAggResponse($scope.vis, resp);
+                var tableGroups = tabifyAggResponse($scope.vis.getAggConfig().getResponseAggs(), resp);
                 console.log(tableGroups);
 
                 if (!tableGroups || !tableGroups.tables) {

@@ -7,15 +7,13 @@ import template from 'plugins/ob-kb-funnel/ob-kb-funnel.html';
 
 import { CATEGORY } from 'ui/vis/vis_category';
 import { VisFactoryProvider } from 'ui/vis/vis_factory';
-import { VisSchemasProvider } from 'ui/vis/editors/default/schemas';
+import { Schemas } from 'ui/vis/editors/default/schemas';
 import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
 
-VisTypesRegistryProvider.register(FunnelProvider);
 
 // The provider function, which must return our new visualization type
-function FunnelProvider(Private) {
+const FunnelProvider = (Private) => {
 	const VisFactory = Private(VisFactoryProvider);
-	const Schemas = Private(VisSchemasProvider);
 
 	// Describe our visualization
 	return VisFactory.createAngularVisualization({
@@ -73,5 +71,6 @@ function FunnelProvider(Private) {
 	
 	});
 }
+VisTypesRegistryProvider.register(FunnelProvider);
 
 export default FunnelProvider;
