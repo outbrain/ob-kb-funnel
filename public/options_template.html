@@ -1,0 +1,70 @@
+<div class="kuiSideBarSection">
+  <div class="form-group">
+    <label for="aggregationType">Select aggregation type:</label>
+    <select class="form-control" ng-model="vis.params.sumOption" id="aggregationType">
+      <option value="byBuckets" selected>By Buckets</option>
+      <option value="byMetrics">By Metrics</option>
+    </select>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.absolute">
+      Absolute value
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.percent">
+      Percent from sum
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.percentFromTop">
+      Percent from top item
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.percentFromAbove">
+      Percent from item above
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.funnelOptions.block.dynamicHeight">
+      Dynamic height
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="minHeight">Min height</label>
+    <input type="number" ng-model="vis.params.funnelOptions.block.minHeight"
+           class="form-control" id="minHeight">
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.funnelOptions.block.highlight">
+      Highlight
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="vis.params.funnelOptions.chart.curve.enabled">
+      Chart curve
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="funnelOptionsJson">
+      Funnel Options JSON:</label>
+    <p>
+    <textarea
+      type="text"
+      id="funnelOptionsJson"
+      class="form-control"
+      ng-model="vis.params.funnelOptionsJson"
+      elastic-textarea
+      validate-json
+    ></textarea>
+    </p>
+  </div>
+</div>

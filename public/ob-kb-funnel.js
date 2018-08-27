@@ -1,63 +1,67 @@
-// Include the angular controller
-import TemplateVisTypeTemplateVisTypeProvider from 'ui/template_vis_type/template_vis_type';
-import VisSchemasProvider from 'ui/vis/schemas';
+import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
+import { VisFactoryProvider } from 'ui/vis/vis_factory';
+import { CATEGORY } from 'ui/vis/vis_category';
+import { Schemas, VisSchemasProvider } from 'ui/vis/editors/default/schemas';
 
-require('plugins/ob-kb-funnel/funnelController');
-require('plugins/ob-kb-funnel/ob-kb-funnel.css');
+import { FunnelVisualizationProvider } from './funnel_visualization';
 
-// The provider function, which must return our new visualization type
-function FunnelProvider(Private) {
-	const TemplateVisType = Private(TemplateVisTypeTemplateVisTypeProvider);
-    const Schemas = Private(VisSchemasProvider);
-	// Describe our visualization
-	return new TemplateVisType({
-		name: 'obFunnel', // The internal id of the visualization (must be unique)
-		title: 'Funnel View', // The title of the visualization, shown to the user
-		description: 'Funnel visualization', // The description of this vis
-		icon: 'fa-toggle-down', // The font awesome icon of this visualization
-		template: require('plugins/ob-kb-funnel/ob-kb-funnel.html'), // The template, that will be rendered for this visualization
-		// Define the aggregation your visualization accepts
-		schemas: new Schemas([
-				{
-					group: 'metrics',
-					name: 'tagsize',
-					title: 'Value',
-					min: 1,
-					aggFilter: ['count', 'avg', 'sum', 'min', 'max', 'cardinality', 'std_dev']
-				},
-				{
-					group: 'buckets',
-					name: 'tags',
-					title: 'Aggregation',
-					min: 0,
-					max: 1,
-					aggFilter: '!geohash_grid'
-				}
-			]),
-		params: {
-			editor: require('plugins/ob-kb-funnel/funnelEditor.html'),
-			defaults: {
-				absolute: true,
-      			percent: false,
-      			percentFromTop: false,
-      			percentFromAbove: false,
-      			sumOption: 'byBuckets',
-      			funnelOptions : "\
-{\n\
-  \"block\": { \n\
-    \"dynamicHeight\": true,\n\
-    \"minHeight\": 30,\n\
-    \"highlight\": true\n\
-  },\n\
-  \"chart\": {\n\
-    \"curve\": {\n\
-      \"enabled\": true\n\
-    }\n\
-  }\n\
-}"
-			}
-		}
-	});
+import './ob-kb-funnel.css';
+import optionsTemplate from './options_template.html';
+
+export function FunnelProvider(Private) {
+  const VisFactory = Private(VisFactoryProvider);
+  const _Schemas = Schemas || Private(VisSchemasProvider);
+
+  return new VisFactory.createBaseVisualization({
+    name: 'ob-kb-funnel',
+    title: 'Funnel View',
+    icon: 'fa-toggle-down',
+    description: 'Funnel visualization',
+    category: CATEGORY.OTHER,
+    visualization: Private(FunnelVisualizationProvider),
+    visConfig: {
+      defaults: {
+        absolute: true,
+        percent: false,
+        percentFromTop: false,
+        percentFromAbove: false,
+        sumOption: 'byBuckets',
+        funnelOptions: {
+          block: {
+            dynamicHeight: true,
+            minHeight: 30,
+            highlight: true,
+          },
+          chart: {
+            curve: {
+              enabled: true,
+            },
+          },
+        },
+        funnelOptionsJson: '{}',
+      },
+    },
+    responseHandler: 'none',
+    editorConfig: {
+      optionsTemplate: optionsTemplate,
+      schemas: new _Schemas([
+        {
+          group: 'metrics',
+          name: 'metric',
+          title: 'Value',
+          min: 1,
+          aggFilter: ['count', 'avg', 'sum', 'min', 'max', 'cardinality', 'std_dev'],
+        }, {
+          group: 'buckets',
+          name: 'bucket',
+          title: 'Aggregation',
+          min: 0,
+          max: 1,
+          aggFilter: ['!geohash_grid'],
+        },
+      ]),
+    },
+  });
 }
 
-require('ui/registry/vis_types').register(FunnelProvider);
+VisTypesRegistryProvider.register(FunnelProvider);
