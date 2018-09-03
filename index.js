@@ -1,7 +1,6 @@
-module.exports = function(kibana) {
-	return new kibana.Plugin({
-		uiExports: {
-			visTypes: ['plugins/ob-kb-funnel/ob-kb-funnel']
-		}
-	});
-};
+export default kibana => new kibana.Plugin({
+  id: 'ob-kb-funnel',
+  uiExports: {
+    visTypes: ['plugins/ob-kb-funnel/ob-kb-funnel'],
+  },
+});

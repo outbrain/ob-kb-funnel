@@ -1,0 +1,70 @@
+<div class="kuiSideBarSection" ng-init="editorState = editorState || vis">
+  <div class="form-group">
+    <label for="aggregationType">Select aggregation type:</label>
+    <select class="form-control" ng-model="editorState.params.sumOption" id="aggregationType">
+      <option value="byBuckets" selected>By Buckets</option>
+      <option value="byMetrics">By Metrics</option>
+    </select>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="editorState.params.absolute">
+      Absolute value
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="editorState.params.percent">
+      Percent from sum
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="editorState.params.percentFromTop">
+      Percent from top item
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="editorState.params.percentFromAbove">
+      Percent from item above
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="editorState.params.funnelOptions.block.dynamicHeight">
+      Dynamic height
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="minHeight">Min height</label>
+    <input type="number" ng-model="editorState.params.funnelOptions.block.minHeight"
+           class="form-control" id="minHeight">
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="editorState.params.funnelOptions.block.highlight">
+      Highlight
+    </label>
+  </div>
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" ng-model="editorState.params.funnelOptions.chart.curve.enabled">
+      Chart curve
+    </label>
+  </div>
+  <div class="form-group">
+    <label for="funnelOptionsJson">
+      Funnel Options JSON:</label>
+    <p>
+    <textarea
+      type="text"
+      id="funnelOptionsJson"
+      class="form-control"
+      ng-model="editorState.params.funnelOptionsJson"
+      elastic-textarea
+      validate-json
+    ></textarea>
+    </p>
+  </div>
+</div>

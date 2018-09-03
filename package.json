@@ -1,8 +1,11 @@
 {
-	"name": "ob-kb-funnel",
-	"version": "5.5.1",
-	"dependencies": {
-		"numeral": "1.5.3",
-		"d3-funnel": "1.0.0"
-	}
+  "name": "ob-kb-funnel",
+  "version": "6.0",
+  "kibana": {
+    "version": "kibana"
+  },
+  "devDependencies": {
+    "numeral": "1.5.3",
+    "d3-funnel": "^1.2.0"
+  }
 }
