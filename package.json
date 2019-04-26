@@ -1,10 +1,10 @@
 {
         "name": "ob-kb-funnel",
-        "version": "6.3.0",
+        "version": "6.7.0",
         "description": "Funnel Visualization",
         "main": "index.js",
         "kibana": {
-                "version": "6.3.0"
+                "version": "6.7.0"
         },
         "dependencies": {
                 "numeral": "1.5.3",

@@ -5,7 +5,6 @@ import './funnelController';
 import optionsTemplate from 'plugins/ob-kb-funnel/funnelEditor.html';
 import template from 'plugins/ob-kb-funnel/ob-kb-funnel.html';
 
-import { CATEGORY } from 'ui/vis/vis_category';
 import { VisFactoryProvider } from 'ui/vis/vis_factory';
 import { Schemas } from 'ui/vis/editors/default/schemas';
 import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
@@ -21,7 +20,6 @@ const FunnelProvider = (Private) => {
 		title: 'Funnel View', // The title of the visualization, shown to the user
 		icon: 'fa-toggle-down', // The font awesome icon of this visualization
 		description: 'Funnel visualization', // The description of this vis
-		category: CATEGORY.OTHER,
 		visConfig: {
 			template: template,
 			defaults: {
@@ -45,7 +43,7 @@ const FunnelProvider = (Private) => {
 }"
 			}
 		},	
-		responseHandler: 'none',
+		responseHandler: 'legacy',
 		editorConfig:	{
 			optionsTemplate: optionsTemplate,
 			// Define the aggregation your visualization accepts

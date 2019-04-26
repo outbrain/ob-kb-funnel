@@ -16,8 +16,7 @@ module.directive('funnelElement', function(Private){
                 if (!resp) {
                     return;
                 }
-                var tableGroups = tabifyAggResponse($scope.vis.getAggConfig().getResponseAggs(), resp);
-                console.log(tableGroups);
+                var tableGroups = resp;
 
                 if (!tableGroups || !tableGroups.tables) {
                     return;
