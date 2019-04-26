@@ -2,6 +2,7 @@
 import './ob-kb-funnel.css';
 import './funnelController';
 
+import { EuiIcon } from '@elastic/eui';
 import optionsTemplate from 'plugins/ob-kb-funnel/funnelEditor.html';
 import template from 'plugins/ob-kb-funnel/ob-kb-funnel.html';
 
@@ -18,7 +19,7 @@ const FunnelProvider = (Private) => {
 	return VisFactory.createAngularVisualization({
 		name: 'obFunnel', // The internal id of the visualization (must be unique)
 		title: 'Funnel View', // The title of the visualization, shown to the user
-		icon: 'fa-toggle-down', // The font awesome icon of this visualization
+		legacyIcon : 'fa-toggle-down', // The font awesome icon of this visualization, todo: update for k7: prop should be icon:<euicon:something
 		description: 'Funnel visualization', // The description of this vis
 		visConfig: {
 			template: template,
