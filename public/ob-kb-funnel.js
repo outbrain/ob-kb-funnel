@@ -2,7 +2,6 @@
 import './ob-kb-funnel.css';
 import './funnelController';
 
-import { EuiIcon } from '@elastic/eui';
 import optionsTemplate from 'plugins/ob-kb-funnel/funnelEditor.html';
 import template from 'plugins/ob-kb-funnel/ob-kb-funnel.html';
 

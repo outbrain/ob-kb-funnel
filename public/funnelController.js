@@ -2,7 +2,6 @@
 import { uiModules } from 'ui/modules';
 const module = uiModules.get('kibana/ob-kb-funnel', ['kibana']);
 import { FilterManagerProvider } from 'ui/filter_manager';
-import { tabifyAggResponse } from 'ui/agg_response/tabify/tabify';
 import numeral from 'numeral';
 import D3Funnel from 'd3-funnel';
 
