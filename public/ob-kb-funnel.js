@@ -1,23 +1,53 @@
 // Include the angular controller
-import TemplateVisTypeTemplateVisTypeProvider from 'ui/template_vis_type/template_vis_type';
-import VisSchemasProvider from 'ui/vis/schemas';
+import './ob-kb-funnel.css';
+import './funnelController';
 
-require('plugins/ob-kb-funnel/funnelController');
-require('plugins/ob-kb-funnel/ob-kb-funnel.css');
+import optionsTemplate from 'plugins/ob-kb-funnel/funnelEditor.html';
+import template from 'plugins/ob-kb-funnel/ob-kb-funnel.html';
+
+import { VisFactoryProvider } from 'ui/vis/vis_factory';
+import { Schemas } from 'ui/vis/editors/default/schemas';
+import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
+
 
 // The provider function, which must return our new visualization type
-function FunnelProvider(Private) {
-	const TemplateVisType = Private(TemplateVisTypeTemplateVisTypeProvider);
-    const Schemas = Private(VisSchemasProvider);
+const FunnelProvider = (Private) => {
+	const VisFactory = Private(VisFactoryProvider);
+
 	// Describe our visualization
-	return new TemplateVisType({
+	return VisFactory.createAngularVisualization({
 		name: 'obFunnel', // The internal id of the visualization (must be unique)
 		title: 'Funnel View', // The title of the visualization, shown to the user
+		legacyIcon : 'fa-toggle-down', // The font awesome icon of this visualization, todo: update for k7: prop should be icon:<euicon:something
 		description: 'Funnel visualization', // The description of this vis
-		icon: 'fa-toggle-down', // The font awesome icon of this visualization
-		template: require('plugins/ob-kb-funnel/ob-kb-funnel.html'), // The template, that will be rendered for this visualization
-		// Define the aggregation your visualization accepts
-		schemas: new Schemas([
+		visConfig: {
+			template: template,
+			defaults: {
+				sumOption: "byBuckets",
+				absolute: true,
+				percent: false,
+				percentFromTop: false,
+				percentFromAbove: false,
+				funnelOptions : "\
+{\n\
+  \"block\": { \n\
+    \"dynamicHeight\": true,\n\
+    \"minHeight\": 30,\n\
+    \"highlight\": true\n\
+  },\n\
+  \"chart\": {\n\
+    \"curve\": {\n\
+      \"enabled\": true\n\
+    }\n\
+  }\n\
+}"
+			}
+		},	
+		responseHandler: 'legacy',
+		editorConfig:	{
+			optionsTemplate: optionsTemplate,
+			// Define the aggregation your visualization accepts
+			schemas: new Schemas([
 				{
 					group: 'metrics',
 					name: 'tagsize',
@@ -35,29 +65,10 @@ function FunnelProvider(Private) {
 					aggFilter: '!geohash_grid'
 				}
 			]),
-		params: {
-			editor: require('plugins/ob-kb-funnel/funnelEditor.html'),
-			defaults: {
-				absolute: true,
-      			percent: false,
-      			percentFromTop: false,
-      			percentFromAbove: false,
-      			funnelOptions : "\
-{\n\
-  \"block\": { \n\
-    \"dynamicHeight\": true,\n\
-    \"minHeight\": 30,\n\
-    \"highlight\": true\n\
-  },\n\
-  \"chart\": {\n\
-    \"curve\": {\n\
-      \"enabled\": true\n\
-    }\n\
-  }\n\
-}"
-			}
-		}
+		},
+	
 	});
 }
+VisTypesRegistryProvider.register(FunnelProvider);
 
-require('ui/registry/vis_types').register(FunnelProvider);
+export default FunnelProvider;

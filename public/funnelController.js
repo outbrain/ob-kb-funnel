@@ -1,12 +1,12 @@
 // Create an Angular module for this plugin
-var module = require('ui/modules').get('ob-kb-funnel');
-var numeral = require('numeral');
-var D3Funnel = require('d3-funnel');
+import { uiModules } from 'ui/modules';
+const module = uiModules.get('kibana/ob-kb-funnel', ['kibana']);
+import { FilterManagerProvider } from 'ui/filter_manager';
+import numeral from 'numeral';
+import D3Funnel from 'd3-funnel';
 
 module.directive('funnelElement', function(Private){
     
-    const tabifyAggResponse = Private(require('ui/agg_response/tabify/tabify'));
-
     return {
         restricts : 'A',
 
@@ -15,8 +15,7 @@ module.directive('funnelElement', function(Private){
                 if (!resp) {
                     return;
                 }
-                var tableGroups = tabifyAggResponse($scope.vis, resp);
-                console.log(tableGroups);
+                var tableGroups = resp;
 
                 if (!tableGroups || !tableGroups.tables) {
                     return;
@@ -55,8 +54,7 @@ module.directive('funnelElement', function(Private){
 });
 
 module.controller('FunnelController', function($scope, Private) {
-    const filterManager = Private(require('ui/filter_manager'));
-
+   const filterManager = Private(FilterManagerProvider);
     $scope.addFilter = function(label) {
         filterManager.add(
             // The field to filter for, we can get it from the config
@@ -107,12 +105,9 @@ module.controller('FunnelController', function($scope, Private) {
                 }
                 values.push(numeral(value).format("0.[000]%"));
             }
-
             data[row[0]] = values;
         }
         $scope.processedData = data;
         return rows;
     }
-
-
   });
