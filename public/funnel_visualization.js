@@ -1,5 +1,5 @@
 import { merge } from 'lodash';
-import { TabifyResponseHandlerProvider } from 'ui/vis/response_handlers/tabify';
+import { LegacyResponseHandlerProvider } from 'ui/vis/response_handlers/legacy';
 import { FilterManagerProvider } from 'ui/filter_manager';
 import { Notifier } from 'ui/notify';
 
@@ -8,7 +8,7 @@ import D3Funnel from 'd3-funnel';
 
 export const FunnelVisualizationProvider = (Private) => {
   const filterManager = Private(FilterManagerProvider);
-  const responseHandler = Private(TabifyResponseHandlerProvider).handler;
+  const responseHandler = Private(LegacyResponseHandlerProvider).handler;
   const notify = new Notifier({ location: 'Funnel' });
 
   return class FunnelVisualization {
@@ -28,17 +28,11 @@ export const FunnelVisualizationProvider = (Private) => {
       this.filterManager = filterManager;
     }
 
-    async render(esResponse) {
+    async render(visData,status) {
       if (!this.container) return;
       this.chart.destroy();
       this.container.innerHTML = '';
 
-      let visData = {};
-      try {
-        visData = await responseHandler(this.vis, esResponse);
-      } catch (e) {
-        console.error(e);
-      }
 
       if (!(Array.isArray(visData.tables) && visData.tables.length) ||
         this.el.clientWidth === 0 || this.el.clientHeight === 0) {

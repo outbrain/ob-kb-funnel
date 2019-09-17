@@ -1,6 +1,5 @@
 import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
 import { VisFactoryProvider } from 'ui/vis/vis_factory';
-import { CATEGORY } from 'ui/vis/vis_category';
 import { Schemas, VisSchemasProvider } from 'ui/vis/editors/default/schemas';
 
 import { FunnelVisualizationProvider } from './funnel_visualization';
@@ -15,9 +14,8 @@ export function FunnelProvider(Private) {
   return new VisFactory.createBaseVisualization({
     name: 'ob-kb-funnel',
     title: 'Funnel View',
-    icon: 'fa-toggle-down',
+    icon: 'facehappy',
     description: 'Funnel visualization',
-    category: CATEGORY.OTHER,
     visualization: Private(FunnelVisualizationProvider),
     visConfig: {
       defaults: {
@@ -41,7 +39,8 @@ export function FunnelProvider(Private) {
         funnelOptionsJson: '{}',
       },
     },
-    responseHandler: 'none',
+    responseHandler: 'legacy',
+    requestHandler: 'courier',
     editorConfig: {
       optionsTemplate: optionsTemplate,
       schemas: new _Schemas([

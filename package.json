@@ -1,6 +1,6 @@
 {
   "name": "ob-kb-funnel",
-  "version": "6.0.0",
+  "version": "6.8.2",
   "kibana": {
     "version": "kibana"
   },
