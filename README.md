@@ -15,8 +15,7 @@ Run `node ./scripts/kibana_plugin.js install https://github.com/outbrain/ob-kb-f
 Once installed, you'll see an additional type of visualization, named "Funnel View". 
 The funnel can be constructed from two types of aggregations: 'By Buckets' and 'By Metrics'
 
-* 'By Buckets' - Every slice in the funnel is a bucket. You should define 1 metric and 1 bucket Aggregation
-is created from the buckets of the aggregation or from metrics.  
+* 'By Buckets' - Every slice in the funnel is a bucket. You should define 1 metric and 1 bucket Aggregation.
 ![example image](https://raw.githubusercontent.com/outbrain/ob-kb-funnel/master/docs/funnel-buckets.png)
 
 * 'By Metrics' - Every slice in the funnel is a different metric. You should define several metrics, without bucket aggregations.
