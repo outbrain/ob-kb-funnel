@@ -2,8 +2,11 @@
 
 ![example image](https://raw.githubusercontent.com/outbrain/ob-kb-funnel/master/docs/image1.png)
 
-Kibana Visualization plugin for displaying a funnel
-Based on D3 Funnel lib - https://github.com/jakezatecky/d3-funnel
+Kibana Visualization plugin for displaying a funnel.   
+Based on D3 Funnel lib - https://github.com/jakezatecky/d3-funnel   
+
+### version
+Kibana version v7.4.0   
 
 ### Installation
 Run `node ./scripts/kibana_plugin.js install https://github.com/outbrain/ob-kb-funnel/releases/download/v7.4.0/ob-kb-funnel-7.4.0.zip`
