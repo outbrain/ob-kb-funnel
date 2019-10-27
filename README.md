@@ -6,10 +6,18 @@ Kibana Visualization plugin for displaying a funnel
 Based on D3 Funnel lib - https://github.com/jakezatecky/d3-funnel
 
 ### Installation
-Run `bin/kibana-plugin install https://github.com/outbrain/ob-kb-funnel/releases/download/v7.4.0/ob-kb-funnel-7.4.0.zip`
-
-Inside the plugin dir run `yarn kbn bootstrap`
+Run `node ./scripts/kibana_plugin.js install https://github.com/outbrain/ob-kb-funnel/releases/download/v7.4.0/ob-kb-funnel-7.4.0.zip`
 
 ### Usage
-Once installed, you'll see an additional type of visualization, named "Funnel View". The funnel is created from the buckets of the aggregation or from metrics. Advanced D3-funnel options can be set in the Options tab, along with other funnel metrics.
+Once installed, you'll see an additional type of visualization, named "Funnel View". 
+The funnel can be constructed from two types of aggregations: 'By Buckets' and 'By Metrics'
+
+* 'By Buckets' - Every slice in the funnel is a bucket. You should define 1 metric and 1 bucket Aggregation
+is created from the buckets of the aggregation or from metrics.  
+![example image](https://raw.githubusercontent.com/outbrain/ob-kb-funnel/master/docs/funnel-buckets.png)
+
+* 'By Metrics' - Every slice in the funnel is a different metric. You should define several metrics, without bucket aggregations.
+![example image](https://raw.githubusercontent.com/outbrain/ob-kb-funnel/master/docs/funnel-metrics.png)
+
+Advanced D3-funnel options can be set in the Options tab, along with other funnel options.
 
