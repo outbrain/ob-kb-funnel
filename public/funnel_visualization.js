@@ -1,15 +1,15 @@
 import { merge } from 'lodash';
-import { TabifyResponseHandlerProvider } from 'ui/vis/response_handlers/tabify';
-import { FilterManagerProvider } from 'ui/filter_manager';
+import { FilterBarQueryFilterProvider } from 'ui/filter_manager/query_filter';
+import { getFilterGenerator } from 'ui/filter_manager';
 import { Notifier } from 'ui/notify';
 
 import numeral from 'numeral';
 import D3Funnel from 'd3-funnel';
 
 export const FunnelVisualizationProvider = (Private) => {
-  const filterManager = Private(FilterManagerProvider);
-  const responseHandler = Private(TabifyResponseHandlerProvider).handler;
-  const notify = new Notifier({ location: 'Funnel' });
+  const queryFilter = Private(FilterBarQueryFilterProvider);
+  const filterGen = getFilterGenerator(queryFilter);
+  // const notify = new Notifier({ location: 'Funnel' });
 
   return class FunnelVisualization {
     containerClassName = 'funnelview';
@@ -25,27 +25,26 @@ export const FunnelVisualizationProvider = (Private) => {
       this.processedData = {};
 
       this.chart = new D3Funnel(this.container);
-      this.filterManager = filterManager;
+      // this.filterManager = filterManager;
     }
 
-    async render(esResponse) {
+    async render(response) {
+      console.log("Renering ", response);
       if (!this.container) return;
       this.chart.destroy();
       this.container.innerHTML = '';
 
-      let visData = {};
-      try {
-        visData = await responseHandler(this.vis, esResponse);
-      } catch (e) {
-        console.error(e);
-      }
-
-      if (!(Array.isArray(visData.tables) && visData.tables.length) ||
+      if (!(Array.isArray(response.rows) && Array.isArray(response.columns)) ||
         this.el.clientWidth === 0 || this.el.clientHeight === 0) {
+        this.showMessage('No data to display');
         return;
       }
 
-      const table = visData.tables[0];
+      if (response.columns.length < 2) {
+        this.showMessage('Data should include a label and a value');
+        return;
+      }
+
       let funnelOptions = this.vis.params.funnelOptions;
       let funnelOptionsJson = {};
       try {
@@ -71,35 +70,35 @@ export const FunnelVisualizationProvider = (Private) => {
           },
         },
       };
-
+      const table = transformDataToTable(response);
+      console.log("Transformed Data ", table);
       const data = getDataForProcessing(table, this.vis.params);
+      console.log("Data - ", data);
       this.processedData = processData(data, this.vis.params);
-      if (!(data.length && data[0].length >= 2)) {
-        return;
-      }
+      console.log("processedData ", this.processedData)
 
       try {
         this.chart.draw(data, funnelOptions);
       } catch (err) {
-        notify.error(err);
+        this.showMessage("Error rendering visualization")
+        console.log("Error rendering visualization", err);
+        // notify.error(err);
       }
     }
 
     _addFilter(label) {
       const field = this.vis.aggs.bySchemaName['bucket'][0].params.field;
+      console.log(field);
       if (!field) {
         return;
       }
-      this.filterManager.add(
-        // The field to filter for, we can get it from the config
-        field,
-        // The value to filter for, we will read out the bucket key from the tag
-        label,
-        // Whether the filter is negated. If you want to create a negated filter pass '-' here
-        null,
-        // The index pattern for the filter
-        this.vis.indexPattern.title,
-      );
+    //const indexPatternId = state.queryParameters.indexPatternId;
+      const newFilters = filterGen.add(field, [label], null, this.vis.indexPattern.title);
+      // this.filterManager.add(field,label,null,this.vis.indexPattern.title);
+    }
+
+    showMessage(msg) {
+      this.container.innerHTML = '<p>' + msg + '</p>';
     }
 
     destroy() {
@@ -111,12 +110,73 @@ export const FunnelVisualizationProvider = (Private) => {
   };
 };
 
+function transformDataToTable(response) {
+  const result = [];
+  const colNames = []
+  response.columns.forEach(col => { colNames.push(col.id); });
+  response.rows.forEach(row => {
+    const data = [];
+    colNames.forEach(colName => {
+      data.push(row[colName]);
+    });
+    result.push(data);
+  });
+  return {rows: result, columns: response.columns};
+}
 /**
  *
  * @param {array} rows
  * @param {object} params
  * @returns {object}
  */
+function _processData(rows, params) {
+  if (!(params && Array.isArray(rows) && rows.length)) {
+    return {};
+  }
+  const sum = rows.reduce((acc, row) => acc + row[1], 0);
+  const top = rows[0][1];
+  return rows.map((row, i) => {
+    let struct = {};
+    let value = row[1];
+    switch (params.selectValueDisplay) {
+      default:
+      case 'absolute':
+        struct.formattedValue = (numeral(value).format('0,0'));
+        struct.value = value;
+        break;
+      case 'percent':
+        value = row[1] / sum;
+        if (!value || isNaN(value)) {
+          value = 0;
+        }
+        struct.formattedValue = (numeral(value).format('0.[000]%'));
+        struct.value = value;
+        break;
+      case 'percentFromTop':
+        value = row[1] / top;
+        if (!value || isNaN(value)) {
+          value = 0;
+        }
+        struct.formattedValue = (numeral(value).format('0.[000]%'));
+        struct.value = value;
+        break;
+      case 'percentFromAbove':
+        value = i === 0 ? 1 : row[1] / rows[i - 1][1];
+        if (!value || isNaN(value)) {
+          value = 0;
+        }
+        struct.formattedValue = (numeral(value).format('0.[000]%'));
+        struct.value = value;
+    }
+    
+    return { 
+      label: row[0] + ' - ' + struct.formattedValue, 
+      formattedValue: struct.formattedValue,
+      value: struct.value
+    };
+  }, {});
+}
+
 function processData(rows, params) {
   if (!(params && Array.isArray(rows) && rows.length)) {
     return {};
@@ -165,7 +225,7 @@ function getDataForProcessing(table, params) {
     return table.rows;
   } else if (params.sumOption === 'byMetrics') {
     const row = table.rows[0];
-    return table.columns.map((column, i) => ([column.title, row[i]]));
+    return table.columns.map((column, i) => ([column.name, row[i]]));
   } else {
     return [];
   }

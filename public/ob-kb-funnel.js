@@ -1,7 +1,7 @@
 import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
 import { VisFactoryProvider } from 'ui/vis/vis_factory';
-import { CATEGORY } from 'ui/vis/vis_category';
 import { Schemas, VisSchemasProvider } from 'ui/vis/editors/default/schemas';
+import { Status } from 'ui/vis/update_status';
 
 import { FunnelVisualizationProvider } from './funnel_visualization';
 
@@ -15,9 +15,8 @@ export function FunnelProvider(Private) {
   return new VisFactory.createBaseVisualization({
     name: 'ob-kb-funnel',
     title: 'Funnel View',
-    icon: 'fa-toggle-down',
+    icon: 'logstashFilter',
     description: 'Funnel visualization',
-    category: CATEGORY.OTHER,
     visualization: Private(FunnelVisualizationProvider),
     visConfig: {
       defaults: {
@@ -41,7 +40,7 @@ export function FunnelProvider(Private) {
         funnelOptionsJson: '{}',
       },
     },
-    responseHandler: 'none',
+
     editorConfig: {
       optionsTemplate: optionsTemplate,
       schemas: new _Schemas([
@@ -61,6 +60,17 @@ export function FunnelProvider(Private) {
         },
       ]),
     },
+    defaults: [
+      { schema: 'metric', type: 'count' }
+    ],
+    requiresUpdateStatus: [
+      Status.AGGS,
+      Status.DATA,
+      Status.PARAMS,
+      Status.RESIZE,
+      Status.TIME,
+      Status.UI_STATE
+    ]
   });
 }
 
