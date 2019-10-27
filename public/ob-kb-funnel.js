@@ -49,7 +49,7 @@ export function FunnelProvider(Private) {
           name: 'metric',
           title: 'Value',
           min: 1,
-          aggFilter: ['count', 'avg', 'sum', 'min', 'max', 'cardinality', 'std_dev'],
+          // aggFilter: ['count', 'avg', 'sum', 'min', 'max', 'cardinality', 'std_dev'],
         }, {
           group: 'buckets',
           name: 'bucket',
