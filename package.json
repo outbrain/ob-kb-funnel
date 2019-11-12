@@ -1,10 +1,10 @@
 {
   "name": "ob-kb-funnel",
-  "version": "7.4.0",
+  "version": "6.8.2",
   "description": "description",
   "main": "index.js",
   "kibana": {
-    "version": "7.4.0",
+    "version": "6.8.2",
     "templateVersion": "1.0.0"
   },
   "scripts": {

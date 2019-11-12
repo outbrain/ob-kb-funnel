@@ -1,14 +1,12 @@
 import { merge } from 'lodash';
-import { FilterBarQueryFilterProvider } from 'ui/filter_manager/query_filter';
-import { getFilterGenerator } from 'ui/filter_manager';
+import { FilterManagerProvider } from 'ui/filter_manager';
 import { Notifier } from 'ui/notify';
 
 import numeral from 'numeral';
 import D3Funnel from 'd3-funnel';
 
 export const FunnelVisualizationProvider = (Private) => {
-  const queryFilter = Private(FilterBarQueryFilterProvider);
-  const filterGen = getFilterGenerator(queryFilter);
+  const filterManagerProvider = Private(FilterManagerProvider);
   // const notify = new Notifier({ location: 'Funnel' });
 
   return class FunnelVisualization {
@@ -93,7 +91,7 @@ export const FunnelVisualizationProvider = (Private) => {
         return;
       }
     //const indexPatternId = state.queryParameters.indexPatternId;
-      const newFilters = filterGen.add(field, [label], null, this.vis.indexPattern.title);
+      const newFilters = filterManagerProvider.add(field, [label], null, this.vis.indexPattern.title);
       // this.filterManager.add(field,label,null,this.vis.indexPattern.title);
     }
 
