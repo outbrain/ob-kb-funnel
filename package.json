@@ -1,7 +1,8 @@
 {
   "name": "ob-kb-funnel",
   "version": "7.4.0",
-  "description": "description",
+  "description": "Visualization of a funnel in Kibana",
+  "license": "MIT",
   "main": "index.js",
   "kibana": {
     "version": "7.4.0",
