@@ -1,23 +1,23 @@
-import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
-import { VisFactoryProvider } from 'ui/vis/vis_factory';
+//import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
+import { visFactory  } from 'ui/vis/vis_factory';
 import { Schemas, VisSchemasProvider } from 'ui/vis/editors/default/schemas';
 import { Status } from 'ui/vis/update_status';
-
+import {setup, start} from '../../../src/legacy/core_plugins/visualizations/public/np_ready/public/legacy';
 import { FunnelVisualizationProvider } from './funnel_visualization';
 
 import './ob-kb-funnel.css';
 import optionsTemplate from './options_template.html';
 
-export function FunnelProvider(Private) {
-  const VisFactory = Private(VisFactoryProvider);
-  const _Schemas = Schemas || Private(VisSchemasProvider);
+export function FunnelProvider() {
+  //const VisFactory = Private(VisFactoryProvider);
+  const _Schemas = Schemas || VisSchemasProvider;
 
-  return new VisFactory.createBaseVisualization({
+  return visFactory.createBaseVisualization({
     name: 'ob-kb-funnel',
     title: 'Funnel View',
     icon: 'logstashFilter',
     description: 'Funnel visualization',
-    visualization: Private(FunnelVisualizationProvider),
+    visualization: FunnelVisualizationProvider(),
     visConfig: {
       defaults: {
         absolute: true,
@@ -73,5 +73,5 @@ export function FunnelProvider(Private) {
     ]
   });
 }
-
-VisTypesRegistryProvider.register(FunnelProvider);
+setup.types.registerVisualization(FunnelProvider);
+//VisTypesRegistryProvider.register(FunnelProvider);

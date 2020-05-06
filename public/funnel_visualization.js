@@ -6,8 +6,8 @@ import { Notifier } from 'ui/notify';
 import numeral from 'numeral';
 import D3Funnel from 'd3-funnel';
 
-export const FunnelVisualizationProvider = (Private) => {
-  const queryFilter = Private(FilterBarQueryFilterProvider);
+export const FunnelVisualizationProvider = () => {
+  const queryFilter = FilterBarQueryFilterProvider;
   const filterGen = getFilterGenerator(queryFilter);
   // const notify = new Notifier({ location: 'Funnel' });
 
@@ -28,7 +28,7 @@ export const FunnelVisualizationProvider = (Private) => {
       // this.filterManager = filterManager;
     }
 
-    async render(response) {
+    render(response) {
       console.log("Renering ", response);
       if (!this.container) return;
       this.chart.destroy();
