@@ -1,0 +1,10 @@
+{
+  "id": "obkbFunnel",
+  "version": "7.8.0",
+  "kibanaVersion": "7.8.0",
+  "server": true,
+  "ui": true,
+  "requiredPlugins": [
+    "visualizations"
+  ]
+}
