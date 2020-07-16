@@ -1,7 +1,7 @@
 {
   "id": "obkbFunnel",
-  "version": "7.7.0",
-  "kibanaVersion": "7.7.0",
+  "version": "7.6.0",
+  "kibanaVersion": "7.6.0",
   "server": true,
   "ui": true,
   "requiredPlugins": [

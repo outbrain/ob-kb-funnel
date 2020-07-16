@@ -6,10 +6,10 @@ Kibana Visualization plugin for displaying a funnel.
 Based on D3 Funnel lib - https://github.com/jakezatecky/d3-funnel   
 
 ### version
-Kibana version v7.7.0
+Kibana version v7.6.0
 
 ### Installation
-Run `node ./scripts/kibana_plugin.js install https://github.com/outbrain/ob-kb-funnel/releases/download/v7.7.0/ob-kb-funnel-7.7.0.zip`
+Run `node ./scripts/kibana_plugin.js install https://github.com/outbrain/ob-kb-funnel/releases/download/v7.6.0/ob-kb-funnel-7.6.0.zip`
 
 ### Usage
 Once installed, you'll see an additional type of visualization, named "Funnel View". 
