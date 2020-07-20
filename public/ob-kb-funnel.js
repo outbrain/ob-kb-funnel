@@ -1,18 +1,13 @@
-//import { VisTypesRegistryProvider } from 'ui/registry/vis_types';
-import { visFactory  } from 'ui/vis/vis_factory';
 import { Schemas, VisSchemasProvider } from 'ui/vis/editors/default/schemas';
-import { Status } from 'ui/vis/update_status';
-import {setup, start} from '../../../src/legacy/core_plugins/visualizations/public/np_ready/public/legacy';
-import { FunnelVisualizationProvider } from './funnel_visualization';
-
+import { setup as visualizations } from '../../../src/legacy/core_plugins/visualizations/public/np_ready/public/legacy';
+import { FunnelVisualizationProvider } from './funnel_vis_provider';
+import { FunnelVisOption } from './funnel_vis_options'
 import './ob-kb-funnel.css';
-import optionsTemplate from './options_template.html';
 
-export function FunnelProvider() {
-  //const VisFactory = Private(VisFactoryProvider);
+export function FunnelVisTypeDefinition() {
   const _Schemas = Schemas || VisSchemasProvider;
 
-  return visFactory.createBaseVisualization({
+  return {
     name: 'ob-kb-funnel',
     title: 'Funnel View',
     icon: 'logstashFilter',
@@ -42,36 +37,31 @@ export function FunnelProvider() {
     },
 
     editorConfig: {
-      optionsTemplate: optionsTemplate,
+      optionsTemplate: FunnelVisOption,
       schemas: new _Schemas([
         {
           group: 'metrics',
           name: 'metric',
           title: 'Value',
           min: 1,
-          // aggFilter: ['count', 'avg', 'sum', 'min', 'max', 'cardinality', 'std_dev'],
+          defaults: [{ schema: 'metric', type: 'count' }]
         }, {
           group: 'buckets',
           name: 'bucket',
           title: 'Aggregation',
           min: 0,
           max: 1,
-          aggFilter: ['!geohash_grid'],
-        },
+          aggFilter: ['!geohash_grid', '!geotile_grid'],
+        }, {
+          group: 'buckets',
+          name: 'data_transform',
+          title: 'Data Transform',
+          min: 0,
+          max: 1,
+          aggFilter: ['terms'],
+        }
       ]),
-    },
-    defaults: [
-      { schema: 'metric', type: 'count' }
-    ],
-    requiresUpdateStatus: [
-      Status.AGGS,
-      Status.DATA,
-      Status.PARAMS,
-      Status.RESIZE,
-      Status.TIME,
-      Status.UI_STATE
-    ]
-  });
+    }
+  }
 }
-setup.types.registerVisualization(FunnelProvider);
-//VisTypesRegistryProvider.register(FunnelProvider);
+visualizations.types.createBaseVisualization(FunnelVisTypeDefinition());
