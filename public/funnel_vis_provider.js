@@ -1,15 +1,11 @@
-import { merge } from 'lodash';
-import { FilterBarQueryFilterProvider } from 'ui/filter_manager/query_filter';
-import { getFilterGenerator } from 'ui/filter_manager';
-import { Notifier } from 'ui/notify';
+import { merge, isEmpty, groupBy, forEach, sum, map, round, min, max } from 'lodash';
+import { FilterBarQueryFilterProvider, generateFilters } from 'ui/filter_manager/query_filter';
 
 import numeral from 'numeral';
 import D3Funnel from 'd3-funnel';
 
 export const FunnelVisualizationProvider = () => {
   const queryFilter = FilterBarQueryFilterProvider;
-  const filterGen = getFilterGenerator(queryFilter);
-  // const notify = new Notifier({ location: 'Funnel' });
 
   return class FunnelVisualization {
     containerClassName = 'funnelview';
@@ -25,7 +21,6 @@ export const FunnelVisualizationProvider = () => {
       this.processedData = {};
 
       this.chart = new D3Funnel(this.container);
-      // this.filterManager = filterManager;
     }
 
     render(response) {
@@ -70,7 +65,7 @@ export const FunnelVisualizationProvider = () => {
           },
         },
       };
-      const table = transformDataToTable(response);
+      const table = transformData(response, this.vis.params);
       console.log("Transformed Data ", table);
       const data = getDataForProcessing(table, this.vis.params);
       console.log("Data - ", data);
@@ -82,7 +77,6 @@ export const FunnelVisualizationProvider = () => {
       } catch (err) {
         this.showMessage("Error rendering visualization")
         console.log("Error rendering visualization", err);
-        // notify.error(err);
       }
     }
 
@@ -92,9 +86,7 @@ export const FunnelVisualizationProvider = () => {
       if (!field) {
         return;
       }
-    //const indexPatternId = state.queryParameters.indexPatternId;
-      const newFilters = filterGen.add(field, [label], null, this.vis.indexPattern.title);
-      // this.filterManager.add(field,label,null,this.vis.indexPattern.title);
+      const newFilters = generateFilters(queryFilter, field, [label], null, this.vis.indexPattern.title);
     }
 
     showMessage(msg) {
@@ -110,6 +102,14 @@ export const FunnelVisualizationProvider = () => {
   };
 };
 
+function transformData(response, params) {
+  if(!isEmpty(params.dimensions.data_transform) && params.sumOption == 'byBuckets') {
+    return transformDataOnField(response, params);
+  } else {
+    return transformDataToTable(response);
+  }
+}
+
 function transformDataToTable(response) {
   const result = [];
   const colNames = []
@@ -123,58 +123,42 @@ function transformDataToTable(response) {
   });
   return {rows: result, columns: response.columns};
 }
-/**
- *
- * @param {array} rows
- * @param {object} params
- * @returns {object}
- */
-function _processData(rows, params) {
-  if (!(params && Array.isArray(rows) && rows.length)) {
-    return {};
+
+function transformDataOnField(response, params){
+  const bucket_agg = response.columns.filter(col => col.name == params.dimensions.bucket?.[0]?.label)[0];
+  const data_transform_agg = response.columns.filter(col => col.name == params.dimensions.data_transform?.[0]?.label)[0];
+  const metric_agg = response.columns.filter(col => col.name == params.dimensions.metric?.[0]?.label)[0];
+  const data_rows = groupBy(response.rows, row => row[bucket_agg.id]);
+  const result = [];
+  let previous_key = undefined;
+  forEach(data_rows, (value, key) => {
+    const data_transform_ids = (data_rows[previous_key] || value).map(m => m[data_transform_agg.id]);
+    const metric_data = map(value.filter(v => data_transform_ids.includes(v[data_transform_agg.id])), metric_agg.id);
+    result.push([key, transformMetricData(params.dimensions.metric?.[0]?.aggType, metric_data)]);
+    previous_key = key;
+  });
+  return {rows: result, columns: response.columns};
+}
+
+function transformMetricData(type, data){
+  let result;
+  switch(type) {
+    case 'count': case 'cardinality': case 'sum':
+      result = sum(data);
+      break;
+    case 'avg':
+      result = round((sum(data)/data.length), 2);
+      break;
+    case 'min':
+      result = min(data);
+      break;
+    case 'max':
+      result = max(data);
+      break;
+    default:
+      result = data;
   }
-  const sum = rows.reduce((acc, row) => acc + row[1], 0);
-  const top = rows[0][1];
-  return rows.map((row, i) => {
-    let struct = {};
-    let value = row[1];
-    switch (params.selectValueDisplay) {
-      default:
-      case 'absolute':
-        struct.formattedValue = (numeral(value).format('0,0'));
-        struct.value = value;
-        break;
-      case 'percent':
-        value = row[1] / sum;
-        if (!value || isNaN(value)) {
-          value = 0;
-        }
-        struct.formattedValue = (numeral(value).format('0.[000]%'));
-        struct.value = value;
-        break;
-      case 'percentFromTop':
-        value = row[1] / top;
-        if (!value || isNaN(value)) {
-          value = 0;
-        }
-        struct.formattedValue = (numeral(value).format('0.[000]%'));
-        struct.value = value;
-        break;
-      case 'percentFromAbove':
-        value = i === 0 ? 1 : row[1] / rows[i - 1][1];
-        if (!value || isNaN(value)) {
-          value = 0;
-        }
-        struct.formattedValue = (numeral(value).format('0.[000]%'));
-        struct.value = value;
-    }
-    
-    return { 
-      label: row[0] + ' - ' + struct.formattedValue, 
-      formattedValue: struct.formattedValue,
-      value: struct.value
-    };
-  }, {});
+  return result;
 }
 
 function processData(rows, params) {
