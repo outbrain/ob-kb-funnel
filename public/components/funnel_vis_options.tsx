@@ -19,30 +19,9 @@
 
 import React, { useCallback } from 'react';
 import { EuiPanel, EuiTextArea } from '@elastic/eui';
-import { VisOptionsProps } from '../../../src/legacy/ui/public/vis/editors/default';
-import { SwitchOption, SelectOption, NumberInputOption } from '../../../src/legacy/core_plugins/kbn_vislib_vis_types/public/components/common';
-
-export interface FunnelVisParams {
-    absolute: boolean;
-    percent: boolean;
-    percentFromTop: boolean;
-    percentFromAbove: boolean;
-    dataTransformFromAbove: boolean;
-    sumOption: string | null;
-    funnelOptions: {
-        block: {
-        dynamicHeight: boolean;
-        minHeight: number | null;
-        highlight: boolean;
-        };
-        chart: {
-        curve: {
-            enabled: boolean;
-        };
-        };
-    };
-    funnelOptionsJson: string | null;
-}
+import { VisOptionsProps } from '../../../../src/plugins/vis_default_editor/public';
+import { SwitchOption, SelectOption, NumberInputOption } from '../../../../src/plugins/charts/public';
+import { FunnelVisParams } from '../types';
 
 export function FunnelVisOption({
   stateParams,
