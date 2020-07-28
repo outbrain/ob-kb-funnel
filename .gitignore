@@ -48,3 +48,6 @@ jspm_packages
 # Yarn Integrity file
 .yarn-integrity
 
+# Target optimizer cache file
+target/public/.kbn-optimizer-cache
+

@@ -1,6 +1,24 @@
-import { merge, isEmpty, groupBy, forEach, sum, map, round, min, max } from 'lodash';
-import { FilterBarQueryFilterProvider, generateFilters } from 'ui/filter_manager/query_filter';
+/*
+ * Licensed to Elasticsearch B.V. under one or more contributor
+ * license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright
+ * ownership. Elasticsearch B.V. licenses this file to you under
+ * the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
+import { merge, isEmpty, groupBy, forEach, sum, map, round, min, max } from 'lodash';
+import { FilterBarQueryFilterProvider, generateFilters } from '../../../../src/plugins/data/public';
 import numeral from 'numeral';
 import D3Funnel from 'd3-funnel';
 
@@ -23,8 +41,7 @@ export const FunnelVisualizationProvider = () => {
       this.chart = new D3Funnel(this.container);
     }
 
-    render(response) {
-      console.log("Renering ", response);
+    render(response, visparams) {
       if (!this.container) return;
       this.chart.destroy();
       this.container.innerHTML = '';
@@ -40,10 +57,10 @@ export const FunnelVisualizationProvider = () => {
         return;
       }
 
-      let funnelOptions = this.vis.params.funnelOptions;
+      let funnelOptions = visparams.funnelOptions;
       let funnelOptionsJson = {};
       try {
-        funnelOptionsJson = JSON.parse(this.vis.params.funnelOptionsJson);
+        funnelOptionsJson = JSON.parse(visparams.funnelOptionsJson);
       } catch (e) {
         funnelOptionsJson = {};
       }
@@ -65,12 +82,10 @@ export const FunnelVisualizationProvider = () => {
           },
         },
       };
-      const table = transformData(response, this.vis.params);
-      console.log("Transformed Data ", table);
-      const data = getDataForProcessing(table, this.vis.params);
-      console.log("Data - ", data);
-      this.processedData = processData(data, this.vis.params);
-      console.log("processedData ", this.processedData)
+      
+      const table = transformData(response, visparams);
+      const data = getDataForProcessing(table, visparams);
+      this.processedData = processData(data, visparams);
 
       try {
         this.chart.draw(data, funnelOptions);
@@ -82,7 +97,6 @@ export const FunnelVisualizationProvider = () => {
 
     _addFilter(label) {
       const field = this.vis.aggs.bySchemaName['bucket'][0].params.field;
-      console.log(field);
       if (!field) {
         return;
       }
@@ -134,7 +148,7 @@ function transformDataOnField(response, params){
   forEach(data_rows, (value, key) => {
     const data_transform_ids = (data_rows[previous_key] || value).map(m => m[data_transform_agg.id]);
     const metric_data = map(value.filter(v => data_transform_ids.includes(v[data_transform_agg.id])), metric_agg.id);
-    result.push([key, transformMetricData(params.dimensions.metric?.[0]?.aggType, metric_data)]);
+    result.push([key, transformMetricData(metric_agg.meta.type, metric_data)]);
     previous_key = key;
   });
   return {rows: result, columns: response.columns};
@@ -199,11 +213,6 @@ function processData(rows, params) {
   }, {});
 }
 
-/**
- * @param {object} table
- * @param {object} params
- * @returns {array}
- */
 function getDataForProcessing(table, params) {
   if (params.sumOption === 'byBuckets') {
     return table.rows;
